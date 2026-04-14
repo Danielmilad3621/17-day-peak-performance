@@ -340,6 +340,53 @@ body {
   letter-spacing: 0.3px;
 }
 
+/* ─── WHOOP live panel ─── */
+.whoop-live-card {
+  background: linear-gradient(135deg, #0d1520, #101520) !important;
+  border-color: #1a3040 !important;
+  margin-bottom: 12px;
+}
+.whoop-live-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--green);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.whoop-live-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 1.5s ease infinite;
+}
+.whoop-live-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.whoop-stat { text-align: center; }
+.whoop-stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+}
+.whoop-stat-label {
+  font-size: 9px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+.whoop-live-time {
+  font-size: 9px;
+  color: var(--text-ghost);
+  text-align: center;
+  margin-top: 10px;
+}
+
 /* ─── Auth page ─── */
 .auth-loading {
   display: flex;

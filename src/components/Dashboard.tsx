@@ -5,9 +5,25 @@ import {
   PLAN_DATA, CAT_COLORS, CAT_ICONS, getTodayDayIndex,
 } from "@/lib/plan-data";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
+import { useWhoop } from "@/lib/use-whoop";
 import type { User } from "@supabase/supabase-js";
 
+import type { WhoopMetrics } from "@/lib/use-whoop";
+
 const STORAGE_KEY = "peak-plan-tasks-v2";
+
+function getLiveValue(metric: string, data: WhoopMetrics): string | null {
+  switch (metric) {
+    case "RHR": return data.rhr != null ? `${data.rhr} bpm` : null;
+    case "HRV": return data.hrv != null ? `${data.hrv} ms` : null;
+    case "Recovery": return data.recovery_score != null ? `${data.recovery_score}%` : null;
+    case "Deep Sleep": return data.deep_sleep_minutes != null
+      ? `${Math.floor(data.deep_sleep_minutes / 60)}h${data.deep_sleep_minutes % 60}m` : null;
+    case "Sleep Debt": return data.sleep_debt_minutes != null
+      ? `${Math.floor(data.sleep_debt_minutes / 60)}h${data.sleep_debt_minutes % 60}m` : null;
+    default: return null;
+  }
+}
 
 interface DayProgress {
   done: number;
@@ -22,6 +38,7 @@ export default function Dashboard({ user }: { user: User | null }) {
   const [showSupplements, setShowSupplements] = useState(false);
   const [showTargets, setShowTargets] = useState(false);
   const [syncing, setSyncing] = useState(false);
+  const whoop = useWhoop();
 
   const loadTasks = useCallback(async () => {
     if (isSupabaseConfigured && user) {
@@ -168,15 +185,66 @@ export default function Dashboard({ user }: { user: User | null }) {
       {/* Targets */}
       {showTargets && (
         <div className="panel">
-          {PLAN_DATA.targets.map((t, i) => (
-            <div key={i} className="panel-card target-card">
-              <div>
-                <div className="target-metric">{t.metric}</div>
-                <div className="target-current">Now: {t.current}</div>
+          {whoop.configured && whoop.data && (
+            <div className="panel-card whoop-live-card">
+              <div className="whoop-live-header">
+                <span className="whoop-live-dot" />
+                LIVE from WHOOP
               </div>
-              <div className="target-goal">→ {t.target}</div>
+              <div className="whoop-live-grid">
+                {whoop.data.rhr != null && (
+                  <div className="whoop-stat">
+                    <div className="whoop-stat-value">{whoop.data.rhr}</div>
+                    <div className="whoop-stat-label">RHR</div>
+                  </div>
+                )}
+                {whoop.data.hrv != null && (
+                  <div className="whoop-stat">
+                    <div className="whoop-stat-value">{whoop.data.hrv}</div>
+                    <div className="whoop-stat-label">HRV</div>
+                  </div>
+                )}
+                {whoop.data.recovery_score != null && (
+                  <div className="whoop-stat">
+                    <div className="whoop-stat-value">{whoop.data.recovery_score}%</div>
+                    <div className="whoop-stat-label">Recovery</div>
+                  </div>
+                )}
+                {whoop.data.deep_sleep_minutes != null && (
+                  <div className="whoop-stat">
+                    <div className="whoop-stat-value">
+                      {Math.floor(whoop.data.deep_sleep_minutes / 60)}h{whoop.data.deep_sleep_minutes % 60}m
+                    </div>
+                    <div className="whoop-stat-label">Deep Sleep</div>
+                  </div>
+                )}
+              </div>
+              {whoop.fetchedAt && (
+                <div className="whoop-live-time">
+                  Updated {new Date(whoop.fetchedAt).toLocaleTimeString()}
+                </div>
+              )}
             </div>
-          ))}
+          )}
+          {whoop.configured && whoop.loading && (
+            <div className="panel-card" style={{ textAlign: "center", padding: "16px" }}>
+              <div className="auth-spinner" style={{ margin: "0 auto" }} />
+            </div>
+          )}
+          {PLAN_DATA.targets.map((t, i) => {
+            const liveValue = whoop.data ? getLiveValue(t.metric, whoop.data) : null;
+            return (
+              <div key={i} className="panel-card target-card">
+                <div>
+                  <div className="target-metric">{t.metric}</div>
+                  <div className="target-current">
+                    {liveValue ? `Live: ${liveValue}` : `Baseline: ${t.current}`}
+                  </div>
+                </div>
+                <div className="target-goal">→ {t.target}</div>
+              </div>
+            );
+          })}
         </div>
       )}
 
