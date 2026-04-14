@@ -340,6 +340,44 @@ body {
   letter-spacing: 0.3px;
 }
 
+/* ─── Weekly summary ─── */
+.weekly-phase-card { padding: 14px !important; }
+.weekly-phase-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+.weekly-phase-pct { font-weight: 700; font-size: 14px; }
+.weekly-phase-bar {
+  height: 4px;
+  background: var(--surface2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.weekly-phase-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+.weekly-phase-detail {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.weekly-day-dot {
+  width: 10px; height: 10px;
+  border-radius: 3px;
+  transition: background 0.2s;
+}
+.weekly-phase-count {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
 /* ─── WHOOP live panel ─── */
 .whoop-live-card {
   background: linear-gradient(135deg, #0d1520, #101520) !important;

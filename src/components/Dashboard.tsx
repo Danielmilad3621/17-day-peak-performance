@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import confetti from "canvas-confetti";
 import {
   PLAN_DATA, CAT_COLORS, CAT_ICONS, getTodayDayIndex,
 } from "@/lib/plan-data";
@@ -37,8 +38,10 @@ export default function Dashboard({ user }: { user: User | null }) {
   const [activeDay, setActiveDay] = useState(todayDay);
   const [showSupplements, setShowSupplements] = useState(false);
   const [showTargets, setShowTargets] = useState(false);
+  const [showWeekly, setShowWeekly] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const whoop = useWhoop();
+  const prevDayComplete = useRef<Set<string>>(new Set());
 
   const loadTasks = useCallback(async () => {
     if (isSupabaseConfigured && user) {
@@ -80,6 +83,19 @@ export default function Dashboard({ user }: { user: User | null }) {
       setSyncing(false);
     } else {
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
+    }
+
+    if (!wasDone) {
+      const dayKey = `${pi}-${di}`;
+      const day = PLAN_DATA.phases[pi].days[di];
+      const doneCount = day.tasks.filter((_, ti2) => {
+        const k = `${pi}-${di}-${ti2}`;
+        return k === key ? true : !!next[k];
+      }).length;
+      if (doneCount === day.tasks.length && !prevDayComplete.current.has(dayKey)) {
+        prevDayComplete.current.add(dayKey);
+        confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 }, colors: ["#2A9D8F", "#E63946", "#F4A261"] });
+      }
     }
   };
 
@@ -342,6 +358,62 @@ export default function Dashboard({ user }: { user: User | null }) {
           );
         })}
       </div>
+
+      {/* Weekly Summary Toggle */}
+      <div className="quick-btns" style={{ borderTop: "1px solid var(--border)", borderBottom: "none" }}>
+        <button
+          className={`quick-btn ${showWeekly ? "active-tgt" : ""}`}
+          onClick={() => setShowWeekly(!showWeekly)}
+        >
+          📊 Weekly Summary
+        </button>
+      </div>
+
+      {showWeekly && (
+        <div className="panel">
+          {PLAN_DATA.phases.map((phase, pi) => {
+            let phaseTotal = 0, phaseDone = 0;
+            phase.days.forEach((day, di) => {
+              day.tasks.forEach((_, ti) => {
+                phaseTotal++;
+                if (completedTasks[`${pi}-${di}-${ti}`]) phaseDone++;
+              });
+            });
+            const phasePct = phaseTotal > 0 ? Math.round((phaseDone / phaseTotal) * 100) : 0;
+            return (
+              <div key={pi} className="panel-card weekly-phase-card">
+                <div className="weekly-phase-header">
+                  <span style={{ color: phase.color, fontWeight: 500 }}>{phase.name}</span>
+                  <span className="weekly-phase-pct" style={{ color: phase.color }}>{phasePct}%</span>
+                </div>
+                <div className="weekly-phase-bar">
+                  <div
+                    className="weekly-phase-fill"
+                    style={{ width: `${phasePct}%`, background: phase.color }}
+                  />
+                </div>
+                <div className="weekly-phase-detail">
+                  {phase.days.map((day, di) => {
+                    const dp = getDayProgress(pi, di);
+                    const complete = dp.done === dp.total && dp.total > 0;
+                    return (
+                      <div
+                        key={di}
+                        className="weekly-day-dot"
+                        title={`${day.label}: ${dp.done}/${dp.total}`}
+                        style={{
+                          background: complete ? phase.color : dp.done > 0 ? `${phase.color}40` : "var(--border)",
+                        }}
+                      />
+                    );
+                  })}
+                  <span className="weekly-phase-count">{phaseDone}/{phaseTotal}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Footer */}
       <div className="footer">
