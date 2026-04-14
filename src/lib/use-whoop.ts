@@ -8,6 +8,11 @@ export interface WhoopMetrics {
   recovery_score?: number;
   deep_sleep_minutes?: number;
   sleep_debt_minutes?: number;
+  sleep_duration_minutes?: number;
+  sleep_efficiency?: number;
+  rem_minutes?: number;
+  light_minutes?: number;
+  sleep_date?: string;
   [key: string]: unknown;
 }
 

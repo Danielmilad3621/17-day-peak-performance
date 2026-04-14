@@ -211,19 +211,13 @@ export default function Dashboard({ user }: { user: User | null }) {
                 {whoop.data.rhr != null && (
                   <div className="whoop-stat">
                     <div className="whoop-stat-value">{whoop.data.rhr}</div>
-                    <div className="whoop-stat-label">RHR</div>
+                    <div className="whoop-stat-label">RHR (bpm)</div>
                   </div>
                 )}
                 {whoop.data.hrv != null && (
                   <div className="whoop-stat">
                     <div className="whoop-stat-value">{whoop.data.hrv}</div>
-                    <div className="whoop-stat-label">HRV</div>
-                  </div>
-                )}
-                {whoop.data.recovery_score != null && (
-                  <div className="whoop-stat">
-                    <div className="whoop-stat-value">{whoop.data.recovery_score}%</div>
-                    <div className="whoop-stat-label">Recovery</div>
+                    <div className="whoop-stat-label">HRV (ms)</div>
                   </div>
                 )}
                 {whoop.data.deep_sleep_minutes != null && (
@@ -232,6 +226,28 @@ export default function Dashboard({ user }: { user: User | null }) {
                       {Math.floor(whoop.data.deep_sleep_minutes / 60)}h{whoop.data.deep_sleep_minutes % 60}m
                     </div>
                     <div className="whoop-stat-label">Deep Sleep</div>
+                  </div>
+                )}
+                {whoop.data.sleep_efficiency != null && (
+                  <div className="whoop-stat">
+                    <div className="whoop-stat-value">{whoop.data.sleep_efficiency.toFixed(0)}%</div>
+                    <div className="whoop-stat-label">Sleep Efficiency</div>
+                  </div>
+                )}
+                {whoop.data.sleep_duration_minutes != null && (
+                  <div className="whoop-stat">
+                    <div className="whoop-stat-value">
+                      {Math.floor(whoop.data.sleep_duration_minutes / 60)}h{whoop.data.sleep_duration_minutes % 60}m
+                    </div>
+                    <div className="whoop-stat-label">Total Sleep</div>
+                  </div>
+                )}
+                {whoop.data.rem_minutes != null && (
+                  <div className="whoop-stat">
+                    <div className="whoop-stat-value">
+                      {Math.floor(whoop.data.rem_minutes / 60)}h{whoop.data.rem_minutes % 60}m
+                    </div>
+                    <div className="whoop-stat-label">REM Sleep</div>
                   </div>
                 )}
               </div>

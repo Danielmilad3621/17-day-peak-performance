@@ -1,0 +1,10 @@
+{"sessionId":"16e575","location":"AuthGate.tsx:50","message":"Google login initiated","data":{"origin":"http://localhost:3000","redirectTo":"http://localhost:3000"},"timestamp":1776205941009,"hypothesisId":"H2"}
+{"sessionId":"16e575","location":"AuthGate.tsx:23","message":"Supabase configured, checking auth state","data":{"origin":"http://localhost:3000","hash":""},"timestamp":1776205952912,"hypothesisId":"H3"}
+{"sessionId":"16e575","location":"AuthGate.tsx:30","message":"getUser result","data":{"hasUser":false,"error":"Auth session missing!"},"timestamp":1776205952936,"hypothesisId":"H4"}
+{"sessionId":"16e575","location":"AuthGate.tsx:39","message":"Auth state changed","data":{"event":"INITIAL_SESSION","hasSession":false},"timestamp":1776205952938,"hypothesisId":"H4"}
+{"sessionId":"16e575","location":"AuthGate.tsx:50","message":"Google login initiated","data":{"origin":"http://localhost:3000","redirectTo":"http://localhost:3000"},"timestamp":1776205955501,"hypothesisId":"H2"}
+{"sessionId":"16e575","location":"AuthGate.tsx:23","message":"Supabase configured, checking auth state","data":{"origin":"http://localhost:3000","hash":"#access_token=eyJhbGciOiJFUzI1NiIsImtpZCI6ImIzN2I1"},"timestamp":1776205956493,"hypothesisId":"H3"}
+{"sessionId":"16e575","location":"AuthGate.tsx:39","message":"Auth state changed","data":{"event":"SIGNED_IN","hasSession":true,"userId":"bbb42742-3d81-4870-8004-b974240aa8f9"},"timestamp":1776205957013,"hypothesisId":"H4"}
+{"sessionId":"16e575","location":"AuthGate.tsx:30","message":"getUser result","data":{"hasUser":true,"userId":"bbb42742-3d81-4870-8004-b974240aa8f9","email":"danielmilad3621@gmail.com"},"timestamp":1776205957213,"hypothesisId":"H4"}
+{"sessionId":"16e575","location":"AuthGate.tsx:39","message":"Auth state changed","data":{"event":"INITIAL_SESSION","hasSession":true,"userId":"bbb42742-3d81-4870-8004-b974240aa8f9"},"timestamp":1776205957229,"hypothesisId":"H4"}
+{"sessionId":"16e575","location":"AuthGate.tsx:39","message":"Auth state changed","data":{"event":"SIGNED_IN","hasSession":true,"userId":"bbb42742-3d81-4870-8004-b974240aa8f9"},"timestamp":1776206010012,"hypothesisId":"H4"}

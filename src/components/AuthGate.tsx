@@ -12,29 +12,16 @@ export default function AuthGate() {
 
   useEffect(() => {
     if (!isSupabaseConfigured) {
-      // #region agent log
-      fetch('http://127.0.0.1:7608/ingest/69984033-4014-4422-9d46-6d78f01f586c',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'16e575'},body:JSON.stringify({sessionId:'16e575',location:'AuthGate.tsx:16',message:'Supabase not configured, skipping auth',data:{isSupabaseConfigured},timestamp:Date.now(),hypothesisId:'H1'})}).catch(()=>{});
-      // #endregion
       setLoading(false);
       return;
     }
 
-    // #region agent log
-    fetch('http://127.0.0.1:7608/ingest/69984033-4014-4422-9d46-6d78f01f586c',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'16e575'},body:JSON.stringify({sessionId:'16e575',location:'AuthGate.tsx:23',message:'Supabase configured, checking auth state',data:{origin: typeof window !== 'undefined' ? window.location.origin : 'ssr', hash: typeof window !== 'undefined' ? window.location.hash.substring(0, 50) : 'ssr'},timestamp:Date.now(),hypothesisId:'H3'})}).catch(()=>{});
-    // #endregion
-
-    supabase.auth.getUser().then(({ data, error: authErr }) => {
-      // #region agent log
-      fetch('http://127.0.0.1:7608/ingest/69984033-4014-4422-9d46-6d78f01f586c',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'16e575'},body:JSON.stringify({sessionId:'16e575',location:'AuthGate.tsx:30',message:'getUser result',data:{hasUser:!!data.user,userId:data.user?.id,email:data.user?.email,error:authErr?.message},timestamp:Date.now(),hypothesisId:'H4'})}).catch(()=>{});
-      // #endregion
+    supabase.auth.getUser().then(({ data }) => {
       setUser(data.user);
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      // #region agent log
-      fetch('http://127.0.0.1:7608/ingest/69984033-4014-4422-9d46-6d78f01f586c',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'16e575'},body:JSON.stringify({sessionId:'16e575',location:'AuthGate.tsx:39',message:'Auth state changed',data:{event,hasSession:!!session,userId:session?.user?.id},timestamp:Date.now(),hypothesisId:'H4'})}).catch(()=>{});
-      // #endregion
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
 
@@ -43,9 +30,6 @@ export default function AuthGate() {
 
   const handleGoogleLogin = async () => {
     setError("");
-    // #region agent log
-    fetch('http://127.0.0.1:7608/ingest/69984033-4014-4422-9d46-6d78f01f586c',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'16e575'},body:JSON.stringify({sessionId:'16e575',location:'AuthGate.tsx:50',message:'Google login initiated',data:{origin: window.location.origin, redirectTo: window.location.origin},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
-    // #endregion
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
@@ -53,16 +37,8 @@ export default function AuthGate() {
       },
     });
     if (error) {
-      // #region agent log
-      fetch('http://127.0.0.1:7608/ingest/69984033-4014-4422-9d46-6d78f01f586c',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'16e575'},body:JSON.stringify({sessionId:'16e575',location:'AuthGate.tsx:60',message:'Google login error',data:{error:error.message},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
-      // #endregion
       setError(error.message);
     }
-  };
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
   };
 
   if (loading) {
