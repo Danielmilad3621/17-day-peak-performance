@@ -130,14 +130,6 @@ export default function Dashboard({ user }: { user: User | null }) {
     }
   };
 
-  const handleSignIn = async () => {
-    if (!isSupabaseConfigured) return;
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: window.location.origin },
-    });
-  };
-
   const progress = getProgress();
   const currentPhase = PLAN_DATA.phases[activePhase];
   const currentDay = currentPhase.days[activeDay];
@@ -149,15 +141,11 @@ export default function Dashboard({ user }: { user: User | null }) {
       <div className="header">
         <div className="header-top-row">
           <div className="header-label">17-Day Protocol</div>
-          {user ? (
+          {user && (
             <button className="sign-out-btn" onClick={handleSignOut}>
               Sign out
             </button>
-          ) : isSupabaseConfigured ? (
-            <button className="sign-out-btn" onClick={handleSignIn}>
-              Sign in to sync
-            </button>
-          ) : null}
+          )}
         </div>
         <div className="header-title">Peak Performance Plan</div>
         <div className="header-sub">
